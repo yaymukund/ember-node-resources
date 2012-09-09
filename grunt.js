@@ -9,11 +9,14 @@ module.exports = function(grunt) {
           reporter: 'tap'
         }
       }
-    }
+    },
+
+    flushredis: {all: {}}
   });
 
   grunt.loadNpmTasks('grunt-simple-mocha');
+  grunt.loadNpmTasks('grunt-flush-redis');
 
   // Default task.
-  grunt.registerTask('default', 'mocha');
+  grunt.registerTask('default', 'flushredis mocha');
 };
