@@ -1,6 +1,17 @@
-var express = require('express');
-var app = express();
-var ResourceController = require('../lib/resource_controller');
+var express = require('express'),
+    app = express(),
+    ResourceController = require('../lib/resource_controller'),
+    db = require('redis').createClient(),
+
+    postsController = ResourceController.create({
+      name: 'post',
+      db: db,
+
+      properties: [
+        'text',
+        'created_at'
+      ]
+    });
 
 // Parse request bodies into a JS object.
 app.use(express.bodyParser());
@@ -9,14 +20,6 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 
 // Set up routes.
-var postsController = ResourceController.create({
-  name: 'post',
-
-  properties: {
-    text: 'string',
-    created_at: 'date'
-  }
-});
-
 postsController.mapRoutes(app);
+
 module.exports = app;

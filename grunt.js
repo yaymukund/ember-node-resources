@@ -9,9 +9,7 @@ module.exports = function(grunt) {
           reporter: 'tap'
         }
       }
-    },
-
-    flushredis: {all: {}}
+    }
   });
 
   grunt.loadNpmTasks('grunt-simple-mocha');
