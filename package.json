@@ -13,7 +13,7 @@
     "ember"
   ],
 
-  "main": "./lib/resource_controller.js",
+  "main": "./lib/index.js",
 
   "dependencies": {
     "redis"                  : "0.7.x",
