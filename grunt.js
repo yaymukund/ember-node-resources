@@ -9,6 +9,13 @@ module.exports = function(grunt) {
           reporter: 'tap'
         }
       }
+    },
+
+    watch: {
+      all: {
+        files: ['test/*_test.js', 'lib/*.js'],
+        tasks: 'flushredis mocha'
+      }
     }
   });
 

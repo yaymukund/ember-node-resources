@@ -83,8 +83,7 @@ describe('GET /posts/:id', function() {
 
       function checkResponse(err, res) {
         should.not.exist(err);
-        _.pick(res.body, _.keys(post))
-          .should.eql(post);
+        res.body.should.include(post);
         done();
       }
     );

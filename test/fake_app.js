@@ -20,6 +20,6 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 
 // Set up routes.
-postsController.mapRoutes(app);
+postsController.extend(app);
 
 module.exports = app;
