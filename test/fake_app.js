@@ -1,10 +1,10 @@
 var express = require('express'),
     app = express(),
-    ResourceController = require('../lib/resource_controller'),
+    Resource = require('../lib/index'),
     db = require('redis').createClient(),
 
-    postsController = ResourceController.create({
-      name: 'post',
+    postsController = Resource.Controller.create({
+      resourceName: 'post',
       db: db,
 
       properties: [

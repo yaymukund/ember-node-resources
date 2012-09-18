@@ -1,4 +1,4 @@
-var ResourceAction = require('../lib/resource_action'),
+var Resource = require('../lib/index'),
     should = require('should'),
     _ = require('underscore');
 
@@ -12,7 +12,7 @@ var createAction = function() {
     callbacks: [function() {}]
   });
 
-  return ResourceAction.create(options);
+  return Resource.Action.create(options);
 };
 
 describe('A collection action', function() {
@@ -20,7 +20,7 @@ describe('A collection action', function() {
 
   before(function() {
     action = createAction({
-      name: 'resource',
+      resourceName: 'resource',
       type: 'collection'
     });
   });
@@ -38,7 +38,7 @@ describe('A member action', function() {
 
   before(function() {
     action = createAction({
-      name: 'resource',
+      resourceName: 'resource',
       type: 'member'
     });
   });
@@ -54,7 +54,7 @@ describe('A member action', function() {
 describe('An action with a controller', function() {
   var action,
       controller = {
-        name: 'resource',
+        resourceName: 'resource',
         properties: ['p1', 'p2'],
         basePath: '/res',
         path: '/special',
@@ -71,7 +71,7 @@ describe('An action with a controller', function() {
 
   describe('with conflicting properties', function() {
     var routeProperties = {
-      name: 'conflict',
+      resourceName: 'conflict',
       properties: ['p3', 'p4'],
       basePath: '/con',
       path: '/spec',
@@ -86,6 +86,44 @@ describe('An action with a controller', function() {
 
     it('prefers action properties over the controller properties', function() {
       action.should.include(routeProperties);
+    });
+  });
+});
+
+describe('An action with a name', function() {
+  var action;
+
+  describe('on a collection', function() {
+    before(function() {
+      action = createAction({
+        resourceName: 'resource',
+        type: 'collection',
+        name: 'action'
+      });
+    });
+
+    it('maps to /resources/action', function() {
+      action.should.include({
+        basePath: '/resources',
+        path: '/resources/action'
+      });
+    });
+  });
+
+  describe('on a member', function() {
+    before(function() {
+      action = createAction({
+        resourceName: 'resource',
+        type: 'member',
+        name: 'action'
+      });
+    });
+
+    it('maps to /resources/:id/action', function() {
+      action.should.include({
+        basePath: '/resources',
+        path: '/resources/:id/action'
+      });
     });
   });
 });
