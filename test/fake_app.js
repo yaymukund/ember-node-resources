@@ -6,11 +6,8 @@ var express = require('express'),
     postsController = Resource.Controller.create({
       resourceName: 'post',
       db: db,
-
-      properties: [
-        'text',
-        'created_at'
-      ]
+      timestamps: true,
+      properties: ['text']
     });
 
 // Parse request bodies into a JS object.

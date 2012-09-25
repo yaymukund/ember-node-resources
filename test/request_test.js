@@ -6,12 +6,8 @@ var request = require('supertest'),
     should = require('should');
 
 describe('POST /posts', function() {
-  var post = {
-    text: 'lolol',
-    created_at: '2012-08-05T00:40:13.567Z'
-  };
-
-  var savedId;
+  var post = {text: 'lolol'},
+      response;
 
   before(function(done) {
     Step(
@@ -24,25 +20,26 @@ describe('POST /posts', function() {
 
       function checkResponse(err, res) {
         should.not.exist(err);
-
-        res.body.should.include(post);
-        res.body.should.have.property('id');
-
-        savedId = res.body.id;
+        response = res.body;
         done();
       }
     );
   });
 
+  it('responds with the created post', function() {
+    response.should.include(post);
+    response.should.have.keys('id', 'created_at', 'updated_at', 'text');
+  });
+
   it('creates the post', function(done) {
     Step(
       function searchForPost() {
-        db.hgetall('posts:' + savedId, this);
+        db.hgetall('posts:' + response.id, this);
       },
 
       function checkResponse(err, foundPost) {
         should.not.exist(err);
-        foundPost.should.include(post);
+        foundPost.should.eql(response);
         done();
       }
     );
@@ -51,7 +48,7 @@ describe('POST /posts', function() {
   it('adds the ID to the list of post IDs', function(done) {
     Step(
       function searchForId() {
-        db.sismember('ids:post', savedId, this);
+        db.sismember('ids:post', response.id, this);
       },
 
       function checkResults(err, exists) {
@@ -92,12 +89,13 @@ describe('GET /posts/:id', function() {
 
 describe('PUT /posts/:id', function() {
   var post = {
-    text: 'lolol',
-    created_at: '2012-08-05T00:40:13.567Z'
-  };
-
-  var modifiedPost = _.clone(post);
-  modifiedPost.text = 'not lolol';
+      id: '2',
+      text: 'lolol',
+      created_at: '2012-08-05T00:40:13.567Z',
+      updated_at: '2012-08-05T00:40:13.567Z'
+    },
+    modifiedPost = {text: 'not lolol'},
+    response;
 
   before(function(done) {
     Step(
@@ -114,9 +112,18 @@ describe('PUT /posts/:id', function() {
 
       function setResult(err, res) {
         should.not.exist(err);
+        response = res.body;
         done();
       }
     );
+  });
+
+  it('responds with the updated post', function() {
+    response.should.include(modifiedPost);
+    response.should.have.keys('id', 'text', 'created_at', 'updated_at');
+
+    response.created_at.should.eql(post.created_at);
+    response.updated_at.should.not.eql(post.updated_at);
   });
 
   describe('the saved post', function() {
@@ -137,8 +144,8 @@ describe('PUT /posts/:id', function() {
     });
 
     it('contains the update', function() {
-      _.pick(savedPost, _.keys(modifiedPost))
-        .should.eql(modifiedPost);
+      savedPost.should.include(modifiedPost);
+      savedPost.should.eql(response);
     });
   });
 });
