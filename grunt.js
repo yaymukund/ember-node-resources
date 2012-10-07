@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     // Tests
-    mocha: {
+    simplemocha: {
       all: {
         src: 'test/*_test.js',
         options: {
@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     watch: {
       all: {
         files: ['test/*_test.js', 'lib/*.js'],
-        tasks: 'flushredis mocha'
+        tasks: 'flushredis simplemocha'
       }
     }
   });
@@ -23,5 +23,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-flush-redis');
 
   // Default task.
-  grunt.registerTask('default', 'flushredis mocha');
+  grunt.registerTask('default', 'flushredis simplemocha');
 };
