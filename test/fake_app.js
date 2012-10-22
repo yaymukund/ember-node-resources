@@ -8,6 +8,14 @@ var express = require('express'),
       db: db,
       timestamps: true,
       properties: ['text']
+    }),
+
+    linesController = Resource.Controller.create({
+      resourceName: 'line',
+      db: db,
+      timestamps: true,
+      objectRoot: false,
+      properties: ['content']
     });
 
 // Parse request bodies into a JS object.
@@ -18,5 +26,6 @@ app.use(express.methodOverride());
 
 // Set up routes.
 postsController.extend(app);
+linesController.extend(app);
 
 module.exports = app;

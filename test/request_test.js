@@ -5,6 +5,28 @@ var request = require('supertest'),
     Step = require('step'),
     should = require('should');
 
+describe('A request', function() {
+  it('doesn\'t include the root if objectRoot is false', function(done) {
+    var line = {content: 'something'};
+
+    Step(
+      function performCreate() {
+        request(app)
+          .post('/lines')
+          .send({line: line})
+          .end(this);
+      },
+
+      function checkResponse(err, res) {
+        should.not.exist(err);
+        should.not.exist(res.body.line);
+        res.body.should.include(line);
+        done();
+      }
+    );
+  });
+});
+
 describe('POST /posts', function() {
   var post = {text: 'lolol'},
       response;
@@ -20,7 +42,7 @@ describe('POST /posts', function() {
 
       function checkResponse(err, res) {
         should.not.exist(err);
-        response = res.body;
+        response = res.body.post;
         done();
       }
     );
@@ -80,7 +102,7 @@ describe('GET /posts/:id', function() {
 
       function checkResponse(err, res) {
         should.not.exist(err);
-        res.body.should.include(post);
+        res.body.post.should.include(post);
         done();
       }
     );
@@ -112,7 +134,7 @@ describe('PUT /posts/:id', function() {
 
       function setResult(err, res) {
         should.not.exist(err);
-        response = res.body;
+        response = res.body.post;
         done();
       }
     );
