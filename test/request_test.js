@@ -1,29 +1,22 @@
-var request = require('supertest'),
-    app = require('./fake_app'),
+var app = require('./fake_app'),
+    request = require('supertest')(app),
     _ = require('underscore'),
     db = require('redis').createClient(),
-    Step = require('step'),
     should = require('should');
 
 describe('A request', function() {
   it('doesn\'t include the root if objectRoot is false', function(done) {
     var line = {content: 'something'};
 
-    Step(
-      function performCreate() {
-        request(app)
-          .post('/lines')
-          .send({line: line})
-          .end(this);
-      },
-
-      function checkResponse(err, res) {
+    request
+      .post('/lines')
+      .send({line: line})
+      .end(function(err, res) {
         should.not.exist(err);
         should.not.exist(res.body.line);
         res.body.should.include(line);
         done();
-      }
-    );
+      });
   });
 });
 
@@ -32,20 +25,14 @@ describe('POST /posts', function() {
       response;
 
   before(function(done) {
-    Step(
-      function performCreate() {
-        request(app)
-          .post('/posts')
-          .send({post: post})
-          .end(this);
-      },
-
-      function checkResponse(err, res) {
+    request
+      .post('/posts')
+      .send({post: post})
+      .end(function(err, res) {
         should.not.exist(err);
         response = res.body.post;
         done();
-      }
-    );
+      });
   });
 
   it('responds with the created post', function() {
@@ -54,31 +41,19 @@ describe('POST /posts', function() {
   });
 
   it('creates the post', function(done) {
-    Step(
-      function searchForPost() {
-        db.hgetall('posts:' + response.id, this);
-      },
-
-      function checkResponse(err, foundPost) {
-        should.not.exist(err);
-        foundPost.should.eql(response);
-        done();
-      }
-    );
+    db.hgetall('posts:' + response.id, function(err, foundPost) {
+      should.not.exist(err);
+      foundPost.should.eql(response);
+      done();
+    });
   });
 
   it('adds the ID to the list of post IDs', function(done) {
-    Step(
-      function searchForId() {
-        db.sismember('ids:post', response.id, this);
-      },
-
-      function checkResults(err, exists) {
-        should.not.exist(err);
-        exists.should.equal(1);
-        done();
-      }
-    );
+    db.sismember('ids:post', response.id, function(err, exists) {
+      should.not.exist(err);
+      exists.should.equal(1);
+      done();
+    });
   });
 });
 
@@ -93,19 +68,13 @@ describe('GET /posts/:id', function() {
   });
 
   it('responds with the post', function(done) {
-    Step(
-      function performFind() {
-        request(app)
-          .get('/posts/1')
-          .end(this);
-      },
-
-      function checkResponse(err, res) {
+    request
+      .get('/posts/1')
+      .end(function(err, res) {
         should.not.exist(err);
         res.body.post.should.include(post);
         done();
-      }
-    );
+      });
   });
 });
 
@@ -120,30 +89,21 @@ describe('PUT /posts/:id', function() {
     response;
 
   before(function(done) {
-    Step(
-      function createPost() {
-        db.hmset('posts:2', post, this);
-      },
-
-      function performUpdate(err) {
-        request(app)
+    db.hmset('posts:2', post, function(err) {
+      request
         .put('/posts/2')
         .send({post: modifiedPost})
-        .end(this);
-      },
-
-      function setResult(err, res) {
-        should.not.exist(err);
-        response = res.body.post;
-        done();
-      }
-    );
+        .end(function(err, res) {
+          should.not.exist(err);
+          response = res.body.post;
+          done();
+        });
+    });
   });
 
   it('responds with the updated post', function() {
     response.should.include(modifiedPost);
     response.should.have.keys('id', 'text', 'created_at', 'updated_at');
-
     response.created_at.should.eql(post.created_at);
     response.updated_at.should.not.eql(post.updated_at);
   });
@@ -152,17 +112,11 @@ describe('PUT /posts/:id', function() {
     var savedPost;
 
     before(function(done) {
-      Step(
-        function getPost() {
-          db.hgetall('posts:2', this);
-        },
-
-        function savePost(err, thePost) {
-          should.not.exist(err);
-          savedPost = thePost;
-          done();
-        }
-      );
+      db.hgetall('posts:2', function(err, thePost) {
+        should.not.exist(err);
+        savedPost = thePost;
+        done();
+      });
     });
 
     it('contains the update', function() {
@@ -179,51 +133,35 @@ describe('DELETE /posts/:id', function() {
   };
 
   before(function(done) {
-    Step(
-      function createPost() {
-        db.hmset('posts:3', post, this.parallel());
-        db.sadd('ids:post', 3, this.parallel());
-      },
+    db.hmset('posts:3', post, function(err) {
+      should.not.exist(err);
 
-      function performDestroy(err) {
+      db.sadd('ids:post', 3, function(err) {
         should.not.exist(err);
-        request(app)
+
+        request
           .del('/posts/3')
-          .end(this);
-      },
-
-      function checkResponse(err, res) {
-        should.not.exist(err);
-        done();
-      }
-    );
+          .end(function(err, res) {
+            should.not.exist(err);
+            done();
+          });
+      });
+    });
   });
 
   it('deletes the key', function(done) {
-    Step(
-      function searchForKey() {
-        db.exists('posts:3', this);
-      },
-
-      function checkResult(err, exists) {
-        should.not.exist(err);
-        exists.should.equal(0);
-        done();
-      }
-    );
+    db.exists('posts:3', function(err, exists) {
+      should.not.exist(err);
+      exists.should.equal(0);
+      done();
+    });
   });
 
   it('removes the ID from the set of post IDs', function(done) {
-    Step(
-      function searchForId() {
-        db.sismember(3, 'ids:post', this);
-      },
-
-      function checkResult(err, exists) {
+    db.sismember(3, 'ids:post', function(err, exists) {
         should.not.exist(err);
         exists.should.equal(0);
         done();
-      }
-    );
+    });
   });
 });

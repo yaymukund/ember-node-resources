@@ -2,19 +2,18 @@ module.exports = function(grunt) {
   grunt.initConfig({
     // Tests
     simplemocha: {
-      all: {
-        src: 'test/*_test.js',
-        options: {
-          ui: 'bdd',
-          reporter: 'tap'
-        }
-      }
+      options: {
+        ui: 'bdd',
+        reporter: 'tap'
+      },
+
+      all: { src: 'test/*_test.js' }
     },
 
     watch: {
       all: {
         files: ['test/*_test.js', 'lib/*.js'],
-        tasks: 'flushredis simplemocha'
+        tasks: ['flushredis', 'simplemocha']
       }
     }
   });
@@ -23,5 +22,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-flush-redis');
 
   // Default task.
-  grunt.registerTask('default', 'flushredis simplemocha');
+  grunt.registerTask('default', ['flushredis', 'simplemocha']);
 };
