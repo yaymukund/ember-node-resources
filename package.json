@@ -1,6 +1,6 @@
 {
   "name"        : "ember-node-resources",
-  "version"     : "0.0.1",
+  "version"     : "0.0.2",
   "author"      : "Mukund Lakshman <yaymukund@gmail.com>",
   "description" : "Easily define resources in node for your ember apps.",
 
