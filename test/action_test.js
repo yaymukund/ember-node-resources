@@ -55,7 +55,7 @@ describe('An action with a controller', function() {
   var action,
       controller = {
         resourceName: 'resource',
-        properties: ['p1', 'p2'],
+        properties: {p1: 'string', p2: 'string'},
         basePath: '/res',
         path: '/special',
         db: 'connection',
@@ -73,7 +73,7 @@ describe('An action with a controller', function() {
   describe('with conflicting properties', function() {
     var routeProperties = {
       resourceName: 'conflict',
-      properties: ['p3', 'p4'],
+      properties: {p3: 'string', p4: 'string'},
       basePath: '/con',
       path: '/spec',
       db: 'connection2',

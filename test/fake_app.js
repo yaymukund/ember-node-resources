@@ -7,7 +7,7 @@ var express = require('express'),
       resourceName: 'post',
       db: db,
       timestamps: true,
-      properties: ['text']
+      properties: {text: 'string'}
     }),
 
     linesController = Resource.Controller.create({
@@ -15,7 +15,7 @@ var express = require('express'),
       db: db,
       timestamps: true,
       objectRoot: false,
-      properties: ['content']
+      properties: {content: 'string'}
     });
 
 // Parse request bodies into a JS object.
