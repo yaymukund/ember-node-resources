@@ -16,10 +16,10 @@
   "main": "./lib/index.js",
 
   "dependencies": {
-    "redis"                  : "0.7.x",
-    "connect-redis"          : "1.4.x",
-    "underscore"             : "1.4.x",
-    "express"                : "3.0.x"
+    "redis": "0.7.x",
+    "connect-redis": "1.4.x",
+    "lodash": "1.0.0-rc.3",
+    "express": "3.0.x"
   },
 
   "devDependencies": {
@@ -27,6 +27,7 @@
     "grunt": "0.4.x",
     "grunt-simple-mocha": "0.3.x",
     "grunt-flush-redis": "https://github.com/yaymukund/grunt-flush-redis/tarball/master",
+    "grunt-contrib-watch": "0.1.x",
     "should": "1.2.x",
     "zombie": "1.4.x",
     "supertest": "0.5.x"

@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 
     watch: {
       all: {
-        files: ['test/*_test.js', 'lib/*.js'],
+        files: ['test/*.js', 'lib/**/*.js'],
         tasks: ['flushredis', 'simplemocha']
       }
     }
@@ -20,6 +20,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-simple-mocha');
   grunt.loadNpmTasks('grunt-flush-redis');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
   grunt.registerTask('default', ['flushredis', 'simplemocha']);

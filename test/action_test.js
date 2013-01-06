@@ -1,6 +1,6 @@
 var Resource = require('../lib/index'),
     should = require('should'),
-    _ = require('underscore');
+    _ = require('lodash');
 
 
 var createAction = function() {

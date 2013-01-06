@@ -1,6 +1,6 @@
 var app = require('./fake_app'),
     request = require('supertest')(app),
-    _ = require('underscore'),
+    _ = require('lodash'),
     db = require('redis').createClient(),
     should = require('should');
 
