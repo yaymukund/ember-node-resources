@@ -4,22 +4,6 @@ var app = require('./fake_app'),
     db = require('redis').createClient(),
     should = require('should');
 
-describe('A request', function() {
-  it('doesn\'t include the root if objectRoot is false', function(done) {
-    var line = {content: 'something'};
-
-    request
-      .post('/lines')
-      .send({line: line})
-      .end(function(err, res) {
-        should.not.exist(err);
-        should.not.exist(res.body.line);
-        res.body.should.include(line);
-        done();
-      });
-  });
-});
-
 describe('POST /posts', function() {
   var post = {text: 'lolol'},
       response;

@@ -58,15 +58,14 @@ describe('An action with a controller', function() {
         properties: {p1: 'string', p2: 'string'},
         basePath: '/res',
         path: '/special',
-        db: 'connection',
-        objectRoot: false
+        db: 'connection'
       };
 
   before(function() {
     action = createAction({controller: controller})
   });
 
-  it('inherits name, properties, basePath, path, db, and objectRoot', function() {
+  it('inherits name, properties, basePath, path, and db', function() {
     action.should.include(controller);
   });
 
@@ -76,8 +75,7 @@ describe('An action with a controller', function() {
       properties: {p3: 'string', p4: 'string'},
       basePath: '/con',
       path: '/spec',
-      db: 'connection2',
-      objectRoot: true
+      db: 'connection2'
     };
 
     before(function() {

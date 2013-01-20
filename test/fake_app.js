@@ -14,7 +14,6 @@ var express = require('express'),
       resourceName: 'line',
       db: db,
       timestamps: true,
-      objectRoot: false,
       properties: {content: 'string'}
     });
 
