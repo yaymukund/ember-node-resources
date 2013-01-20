@@ -43,7 +43,7 @@ describe('POST /posts', function() {
   it('creates the post', function(done) {
     db.hgetall('posts:' + response.id, function(err, foundPost) {
       should.not.exist(err);
-      foundPost.should.eql(response);
+      foundPost.should.eql(_.omit(response, 'id'));
       done();
     });
   });
